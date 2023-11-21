@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"net/http"
 	"path/filepath"
 )
 
@@ -10,13 +11,13 @@ func TempParse() (map[string]*template.Template,error) {
 
 	cache:=map[string]*template.Template{}
 
-	pages, err := filepath.Glob("../photo_share/temp/*.html")
+	pages, err := filepath.Glob("/home/ioss/Desktop/project/golang_photo/temp/*.html")
 
 	if err != nil {
 		return nil, err
 	}
-
-    include_pages,err:=filepath.Glob("../photo_share/temp/include/*.html")
+	fmt.Println(pages)
+    include_pages,err:=filepath.Glob("/home/ioss/Desktop/project/golang_photo/temp/include/*.html")
 	if err != nil {
 		return nil, err
 	}
@@ -39,6 +40,16 @@ func TempParse() (map[string]*template.Template,error) {
 		fmt.Println("cache",cache)
 
 	}
-
+	fmt.Println(cache)
 	return cache, nil
+}
+
+
+func (a *Applcation)Render(w http.ResponseWriter,page string,data interface{}) error{
+	t:=a.Temp[page]
+	err:=t.ExecuteTemplate(w,"base",data)
+	if err!=nil{
+	return err
+	}
+	return nil
 }

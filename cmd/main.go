@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	
 	"html/template"
 	"log"
 	"net/http"
@@ -17,20 +17,21 @@ type PageData struct {
 type Applcation struct{
 	Temp map[string]*template.Template
 }
+
 func main() {
-   fmt.Println(("heyy making"))
+
 	r := chi.NewRouter()
 	dataSourceName := `root:rooPasswrd@tcp(165.232.188.131:7000)/ricky`
 	
 	
-	// template, err := TempParse()
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	template, err := TempParse()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// app:=Applcation{
-	// 	Temp: template,
-	// }
+	app:=Applcation{
+		Temp: template,
+	}
 
 	db, err := sql.Open("mysql", dataSourceName)
 	if err != nil {
@@ -39,19 +40,15 @@ func main() {
 	defer db.Close()
    
 
-	 r.Get("/",func(w http.ResponseWriter, r *http.Request) {
 
+	 r.Get("/",func(w http.ResponseWriter, r *http.Request) {
 		data:=PageData{
-			Title: "hello",
+			Title: "HOME darta",
 		}
-		fmt.Println(data)
-		fmt.Fprintf(w,"dddd")
-		// t:=template["index.html"]
-		// fmt.Println("con",template)
-		// err:=t.ExecuteTemplate(w,"index.html",data)
-		// if err!=nil{
-		// log.Fatal(err)
-		// }
+		err=app.Render(w,"home.html",data)
+		if err!=nil {
+			log.Println(err)
+		}
 
 	 })
 
